@@ -561,8 +561,15 @@ public partial class MainScreen : WindowMain, IKeyboardFocus, IProgress<(string,
     }
 
     public void ShowPseudoScreen(PseudoScreen screen) {
+        if (!Ui.IsMainThread()) {
+            // If we're not on the UI thread, relocate there.
+            // This is hopefully unnecessary (the Rebuild calls were not protected), but there are too many calls to quickly validate.
+            Ui.DispatchInMainThread(x => ShowPseudoScreen((PseudoScreen)x!), screen);
+            return;
+        }
+
         if (topScreen == null) {
-            Ui.DispatchInMainThread(x => fadeDrawer.CreateDownscaledImage(), null);
+            fadeDrawer.CreateDownscaledImage();
         }
         project.undo.Suspend();
         screen.Rebuild();
