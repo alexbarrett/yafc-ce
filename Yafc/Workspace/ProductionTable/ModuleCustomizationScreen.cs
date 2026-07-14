@@ -26,7 +26,7 @@ public class ModuleCustomizationScreen : PseudoScreenWithResult<ModuleTemplateBu
                 recipe.RecordUndo().modules = builder?.Build(recipe);
             }
         };
-        _ = MainScreen.Instance.ShowPseudoScreen(Instance);
+        MainScreen.Instance.ShowPseudoScreen(Instance);
     }
 
     public static void Show(ProjectModuleTemplate template) {
@@ -39,7 +39,7 @@ public class ModuleCustomizationScreen : PseudoScreenWithResult<ModuleTemplateBu
                 template.RecordUndo().template = builder!.Build(template);
             }
         };
-        _ = MainScreen.Instance.ShowPseudoScreen(Instance);
+        MainScreen.Instance.ShowPseudoScreen(Instance);
     }
 
     public override void Build(ImGui gui) {

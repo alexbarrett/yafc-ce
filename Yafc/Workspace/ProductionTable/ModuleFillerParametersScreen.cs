@@ -15,7 +15,7 @@ public class ModuleFillerParametersScreen : PseudoScreen {
     private readonly ModuleFillerParameters modules;
     private readonly VirtualScrollList<KeyValuePair<EntityCrafter, BeaconOverrideConfiguration>> overrideList;
 
-    public static void Show(ModuleFillerParameters parameters) => _ = MainScreen.Instance.ShowPseudoScreen(new ModuleFillerParametersScreen(parameters));
+    public static void Show(ModuleFillerParameters parameters) => MainScreen.Instance.ShowPseudoScreen(new ModuleFillerParametersScreen(parameters));
 
     private ModuleFillerParametersScreen(ModuleFillerParameters modules) {
         this.modules = modules;

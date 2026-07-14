@@ -19,7 +19,7 @@ public class MessageBox : PseudoScreenWithResult<bool> {
 
     public static void Show(Action<bool, bool>? result, string title, string message, string yes, string? no) {
         MessageBox instance = new MessageBox(title, message, yes, no) { completionCallback = result };
-        _ = MainScreen.Instance.ShowPseudoScreen(instance);
+        MainScreen.Instance.ShowPseudoScreen(instance);
     }
 
     public static void Show(string title, string message, string yes) => Show(null, title, message, yes, null);

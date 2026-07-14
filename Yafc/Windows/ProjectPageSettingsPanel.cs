@@ -38,7 +38,8 @@ public class ProjectPageSettingsPanel : PseudoScreen {
         }
     }
 
-    public static void Show(ProjectPage? page, Action<string, FactorioObject?>? callback = null) => _ = MainScreen.Instance.ShowPseudoScreen(new ProjectPageSettingsPanel(page, callback));
+    public static void Show(ProjectPage? page, Action<string, FactorioObject?>? callback = null)
+        => MainScreen.Instance.ShowPseudoScreen(new ProjectPageSettingsPanel(page, callback));
 
     public override void Build(ImGui gui) {
         gui.spacing = 3f;

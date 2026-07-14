@@ -80,7 +80,7 @@ public partial class MainScreen : WindowMain, IKeyboardFocus, IProgress<(string,
         DataUtils.SetupForProject(project);
         this.project = project;
         if (project.justCreated) {
-            _ = ShowPseudoScreen(new MilestonesPanel());
+            ShowPseudoScreen(new MilestonesPanel());
             project.AssureFirstPage();
         }
 
@@ -406,7 +406,7 @@ public partial class MainScreen : WindowMain, IKeyboardFocus, IProgress<(string,
 
         BuildSubHeader(gui, LSs.MenuHeaderTools);
         if (gui.BuildContextMenuButton(LSs.Milestones) && gui.CloseDropdown()) {
-            _ = ShowPseudoScreen(new MilestonesPanel());
+            ShowPseudoScreen(new MilestonesPanel());
         }
 
         if (gui.BuildContextMenuButton(LSs.Preferences) && gui.CloseDropdown()) {
@@ -560,7 +560,7 @@ public partial class MainScreen : WindowMain, IKeyboardFocus, IProgress<(string,
         ShowTooltip(objectTooltip);
     }
 
-    public bool ShowPseudoScreen(PseudoScreen screen) {
+    public void ShowPseudoScreen(PseudoScreen screen) {
         if (topScreen == null) {
             Ui.DispatchInMainThread(x => fadeDrawer.CreateDownscaledImage(), null);
         }
@@ -569,7 +569,6 @@ public partial class MainScreen : WindowMain, IKeyboardFocus, IProgress<(string,
         pseudoScreens.Insert(0, screen);
         screen.Open();
         rootGui.Rebuild();
-        return true;
     }
 
     public void ClosePseudoScreen(PseudoScreen screen) {

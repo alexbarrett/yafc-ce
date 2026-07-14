@@ -60,7 +60,7 @@ public abstract class SelectObjectPanel<TResult, TDisplay> : PseudoScreenWithRes
     protected void Select(IEnumerable<TDisplay> list, bool allowNone, ObjectSelectOptions<TDisplay> options, Action<TDisplay?> selectItem,
         Action<TResult?, Action<TDisplay?>> mapResult, string? noneTooltip = null) {
 
-        _ = MainScreen.Instance.ShowPseudoScreen(this);
+        MainScreen.Instance.ShowPseudoScreen(this);
         this.options = options as QualitySelectOptions<TDisplay>;
         this.noneTooltip = noneTooltip;
         header = options.Header;

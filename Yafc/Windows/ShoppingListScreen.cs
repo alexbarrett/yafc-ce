@@ -52,7 +52,7 @@ public class ShoppingListScreen : PseudoScreen {
         _ = gui.BuildFactorioObjectButtonBackground(gui.lastRect, element.obj);
     }
 
-    public static void Show(List<RecipeRow> recipes) => _ = MainScreen.Instance.ShowPseudoScreen(new ShoppingListScreen(recipes));
+    public static void Show(List<RecipeRow> recipes) => MainScreen.Instance.ShowPseudoScreen(new ShoppingListScreen(recipes));
 
     private void RebuildData() {
         decomposed = false;

@@ -87,7 +87,7 @@ public class ProductionTableView : ProjectPageView<ProductionTable> {
                         PreferencesScreen.ShowGeneral();
                     }
                     else if (row.warningFlags.HasFlag(WarningFlags.UselessQuality)) {
-                        _ = MainScreen.Instance.ShowPseudoScreen(new MilestonesPanel());
+                        MainScreen.Instance.ShowPseudoScreen(new MilestonesPanel());
                     }
                     else if (row.warningFlags.HasFlag(WarningFlags.ExcessProductivity)) {
                         PreferencesScreen.ShowProgression();
