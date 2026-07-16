@@ -25,8 +25,6 @@ public partial class MainScreen : WindowMain, IKeyboardFocus, IProgress<(string,
     private readonly List<PseudoScreen> pseudoScreens = [];
     private readonly VirtualScrollList<ProjectPage> allPages;
     private readonly MainScreenTabBar tabBar;
-    private readonly FadeDrawer fadeDrawer = new FadeDrawer();
-
     private PseudoScreen? topScreen;
     public Project project { get; private set; }
     private ProjectPage? _activePage;
@@ -225,29 +223,23 @@ public partial class MainScreen : WindowMain, IKeyboardFocus, IProgress<(string,
     }
 
     protected override void BuildContent(ImGui gui) {
-        if (pseudoScreens.Count > 0) {
-            var top = pseudoScreens[0];
-            if (gui.isBuilding) {
-                gui.DrawRenderable(new Rect(default, size), fadeDrawer, SchemeColor.None);
-            }
+        BuildTabBar(gui);
+        BuildPage(gui);
 
-            if (top != topScreen) {
-                topScreen = top;
-                _ = InputSystem.Instance.SetDefaultKeyboardFocus(top);
+        if (pseudoScreens.Count > 0) {
+            if (topScreen != pseudoScreens[0]) {
+                topScreen = pseudoScreens[0];
+                InputSystem.Instance.SetDefaultKeyboardFocus(topScreen);
             }
-            top.Build(gui, size);
+            topScreen.Build(gui, size);
         }
-        else {
-            if (topScreen != null) {
-                project.undo.Resume();
-                _ = InputSystem.Instance.SetDefaultKeyboardFocus(this);
-                topScreen = null;
-                if (analysisUpdatePending) {
-                    ReRunAnalysis();
-                }
+        else if (topScreen != null) {
+            topScreen = null;
+            InputSystem.Instance.SetDefaultKeyboardFocus(this);
+            project.undo.Resume();
+            if (analysisUpdatePending) {
+                ReRunAnalysis();
             }
-            BuildTabBar(gui);
-            BuildPage(gui);
         }
     }
 
@@ -568,9 +560,6 @@ public partial class MainScreen : WindowMain, IKeyboardFocus, IProgress<(string,
             return;
         }
 
-        if (topScreen == null) {
-            fadeDrawer.CreateDownscaledImage();
-        }
         project.undo.Suspend();
         screen.Rebuild();
         pseudoScreens.Insert(0, screen);
@@ -736,42 +725,6 @@ public partial class MainScreen : WindowMain, IKeyboardFocus, IProgress<(string,
     public bool KeyUp(SDL.SDL_Keysym key) => true;
 
     public void FocusChanged(bool focused) { }
-
-    private class FadeDrawer : IRenderable {
-        private SDL.SDL_Rect srcRect;
-        private TextureHandle blurredFade;
-
-        public void CreateDownscaledImage() {
-            nint renderer = Instance.surface!.renderer; // null-forgiving: surface has been set earlier in the render loop.
-            blurredFade = blurredFade.Destroy();
-            var texture = Instance.surface.BeginRenderToTexture(out var size);
-            Instance.MainRender();
-            Instance.surface.EndRenderToTexture();
-            for (int i = 0; i < 2; i++) {
-                SDL.SDL_Rect halfSize = new SDL.SDL_Rect() { w = size.w / 2, h = size.h / 2 };
-                var halfTexture = Instance.surface.CreateTexture(SDL.SDL_PIXELFORMAT_RGBA8888, (int)SDL.SDL_TextureAccess.SDL_TEXTUREACCESS_TARGET, halfSize.w, halfSize.h);
-                _ = SDL.SDL_SetRenderTarget(renderer, halfTexture.handle);
-                var bgColor = SchemeColor.PureBackground.ToSdlColor();
-                _ = SDL.SDL_SetRenderDrawColor(renderer, bgColor.r, bgColor.g, bgColor.b, bgColor.a);
-                _ = SDL.SDL_RenderClear(renderer);
-                _ = SDL.SDL_SetTextureBlendMode(texture.handle, SDL.SDL_BlendMode.SDL_BLENDMODE_BLEND);
-                _ = SDL.SDL_SetTextureAlphaMod(texture.handle, 120);
-                _ = SDL.SDL_RenderCopy(renderer, texture.handle, ref size, ref halfSize);
-                _ = texture.Destroy();
-                texture = halfTexture;
-                size = halfSize;
-            }
-            _ = SDL.SDL_SetRenderTarget(renderer, IntPtr.Zero);
-            srcRect = size;
-            blurredFade = texture;
-        }
-
-        public void Render(DrawingSurface surface, SDL.SDL_Rect position, SDL.SDL_Color color) {
-            if (blurredFade.valid) {
-                _ = SDL.SDL_RenderCopy(surface.renderer, blurredFade.handle, ref srcRect, ref position);
-            }
-        }
-    }
 
     public void Report((string, string) value) => logger.Information("Status: {primary}, {secondary}", value.Item1, value.Item2); // TODO
 
