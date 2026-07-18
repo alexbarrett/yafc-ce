@@ -22,6 +22,11 @@
 Version:
 Date:
     Features:
+    Fixes:
+----------------------------------------------------------------------------------------------------------------------
+Version: 2.20.0
+Date: 17 July 2026
+    Features:
         - Support Factorio 2.1.
         - Improved handling of split-DPI, multi-monitor systems on Windows.
         - Yafc will cache rendered icons to improve mod load times.
